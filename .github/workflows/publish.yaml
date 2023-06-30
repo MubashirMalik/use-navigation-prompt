@@ -1,18 +1,30 @@
-name: Publish Package to npmjs
-on:
-  release:
-    types: [published]
+name: build # Name Action Build
+
+on: [push]  # Trigger on push
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  run:
+    runs-on: ubuntu-latest                         # Run on Ubuntu Docker image
     steps:
-      - uses: actions/checkout@v3
-      # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+    - name: Checkout Repo                          # Checkout repo
+      uses: actions/checkout@v1
+    - name: Use Node.js                            # Configure Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.9'                       # Set Node.js Version
+        registry-url: 'https://registry.npmjs.org' # Set Node.js reigistry
+    - name: Deploy Info                            # Print GitHub Deploy info
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
+    - name: Install                                # Install dependancies
+      run: npm install
+    - name: Build                                  # Build app if needed
+      run: npm run build --if-present
+    - name: Test
+      run: npm run test --if-present               # Run tests if needed
+    - name: Publish
+      if: startsWith(github.ref, 'refs/tags/v')    # Check if publish step should run
+      run: npm publish --access public             # Publish package
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # Set NPM auth token from GitHub Secrets
