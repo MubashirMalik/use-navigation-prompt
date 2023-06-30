@@ -1,6 +1,6 @@
 {
-  "name": "@mubashirahmedmalik/use-navigation-prompt",
-  "version": "1.0.1",
+  "name": "use-navigation-prompt",
+  "version": "1.0.2",
   "description": "",
   "main": "use-navigation-prompt.js",
   "repository": {
