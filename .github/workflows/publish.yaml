@@ -22,7 +22,6 @@ jobs:
     - name: Build                                  # Build app if needed
       run: npm run build --if-present
     - name: Publish
-      if: startsWith(github.ref, 'refs/tags/v')    # Check if publish step should run
       run: npm publish --access public             # Publish package
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # Set NPM auth token from GitHub Secrets
